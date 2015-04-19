@@ -1,0 +1,138 @@
+div(ng-include="'components/navbar/navbar.html'")
+.container-fluid
+  .row(ng-controller="authCtrl")
+    .panel.panel-default(ng-show="isLogged")
+      span You logged on 
+      span {{userName}}
+      button(ng-click="logout()") &nbsp;Logout
+    .panel.panel-default(ng-hide="isLogged")
+      label(for="user_id") ID
+      input(name="user_id" type="text" ng-model="user_id")
+      label(for="pw") Password
+      input(name="pw" type="password" ng-model="pw")
+      button(ng-click="login()") Login
+
+.container-fluid
+  .row
+    .col-md-4.col-xs-12
+      .panel.panel-default
+        .panel-heading
+          span.panel-title
+            | Editor - 
+            span(ng-model='editorTitle') {{editorTitle}}
+        ui-codemirror#editor.panel-body.nopadding.CodeMirror(ng-model='editor', ui-codemirror='{ onLoad:codemirrorLoaded }', ui-codemirror-opts='editorOptions')
+        .panel-footer.form-horizontal
+          .form-group(ng-controller="documentManagerCtrl")
+            .col-sm-12
+              button#newdoc.btn.btn-default(type='button', ng-click='newDoc()') New
+              button#loaddoc.btn.btn-default(type='button', ng-click='loadDoc()') Load
+              button#savedoc.btn.btn-default(type='button', ng-click='saveDoc()') Save
+              button#savedocas.btn.btn-default(type='button', ng-click='saveDocAs()') Save As...
+              button#deletedoc.btn.btn-danger(type='button', ng-click='deleteDoc()') DELETE
+              button#sharedoc.btn.btn-default(type='button', ng-click='shareDoc()') Share +
+              button#analyze.btn.btn-default(type='button', ng-click='analyze()') Analyze
+          .navbar
+            div
+              label Scene Range
+              input(type='number', ng-init='0', ng-model='scene_start')
+              span  - 
+              input(type='number', ng-init='0', ng-model='scene_end')
+              input.btn.btn-default(type='button', value='Update', ng-click='refreshNet()')
+            span From : {{ sceneStartTitle }}
+            br
+            span To : {{ sceneEndTitle }}
+            div
+              input(type='checkbox', ng-model='clustered')
+              | Cluster view
+    .col-md-8.col-xs-12
+      tabset
+        tab(heading="Character-net")
+          .panel.panel-default
+            .panel-body.autoresize
+              svg#character_net
+        tab(heading="Table View")
+          .panel.panel-default
+            #tblview.panel-body(ng-controller='TableViewController')
+              h3 Degree Centrality
+              table.table-bordered
+                thead
+                  th Group
+                  th DC
+                tbody
+                  tr
+                    td Main
+                    td {{ DC[0] }}
+                  tr
+                    td Sub
+                    td {{ DC[1] }}
+                  tr
+                    td Extra
+                    td {{ DC[2] }}
+              h3 Weight(Total: {{ totalWeight }})
+              table.table-bordered
+                thead
+                  th Group
+                  th Value
+                tbody
+                  tr(ng-repeat='val in groupVal')
+                    td {{ val.source }} -&gt; {{ val.target }}
+                    td {{ val.degree }}
+              h3 Number of Characters
+              table.table-bordered
+                thead
+                  th Group
+                  th Value
+                tbody
+                  tr
+                    td 13) Main
+                    td {{ group1.length }}
+                  tr
+                    td 14) Sub
+                    td {{ group2.length }}
+                  tr
+                    td 15) Extra
+                    td {{ group3.length }}
+              h3 Talk Degree
+              table.table-bordered
+                thead
+                  th Character
+                  th Tell
+                  th Listen
+                  th Delta
+                tbody
+                  tr(ng-repeat='talk in talkDegree', ng-class='{\
+                  group1: $index <  group2Index,\
+                  group2: $index >= group2Index && $index < group3Index,\
+                  group3: $index >= group3Index\
+                  }')
+                    td {{ talk.character }}
+                    td {{ talk.tell }}
+                    td {{ talk.listen }}
+                    td {{ talk.delta }}
+              h3 Character Net Matrix
+              button.btn.btn-warning(ng-click='refreshNet()') Update
+              table.table-bordered
+                tr(ng-repeat='row in charNetTable')
+                  td(ng-repeat='col in row track by $index') {{ col }}
+              h3 Talks
+              table.table-bordered
+                thead
+                  th Scene
+                  th Title
+                  th line #
+                  th Teller
+                  th Listener
+                  th Dialogue
+                tbody
+                  tr(ng-repeat='talk in talks')
+                    td {{ talk.number }}
+                    td {{ talk.title }}
+                    td {{ talk.line }}
+                    td {{ talk.teller }}
+                    td {{ talk.listener }}
+                    td {{ talk.dialogue }}
+        tab(heading="JSON View")
+          .panel.panel-default
+            .panel-body.autoresize
+              span.nav This JSON stored at window.scenes
+              pre#jsonview.col-xs-12(style='height:100%').

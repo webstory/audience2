@@ -1,0 +1,16 @@
+<div class="modal-header">
+  <div class="modal-title">Share Document - {{title}}</div>
+</div>
+<div class="modal-body">
+  <table class="table table-bordered table-striped">
+  <thead>
+  <tr><th colspan="2">User</th></tr>
+    <tr ng-repeat="item in items">
+      <td>{{ item.user }}</td><td><a href="#" ng-click="remove($index)">remove</a></td>
+    </tr>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="invite()">Invite</button>
+  <button class="btn btn-primary" ng-click="ok()">Close</button>
+</div>

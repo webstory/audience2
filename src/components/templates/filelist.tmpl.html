@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h1 class="modal-title">Choose one</h1>
+</div>
+<div class="modal-body" style="max-height:500px; overflow-y:scroll">
+  <table class="table table-bordered table-striped">
+  <thead>
+  <tr><th>Title</th><th>Owner</th><th>Last modified</th></tr>
+    <tr ng-repeat="item in items">
+      <td><a ng-click="selected.item = item.title; ok()">{{ item.title }}</a></td>
+      <td>{{ item.owner }}</td>
+      <td>{{ item.mdate }}</td>
+    </tr>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

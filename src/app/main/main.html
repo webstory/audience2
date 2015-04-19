@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Audience - A Finaldraft script analyzer</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="bower_components/html5-boilerplate/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/html5-boilerplate/css/main.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/highlightjs/styles/github.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/nvd3/nv.d3.css"/>
+  <link rel="stylesheet" type="text/css" href="css/app.css"/>
+  <link rel="stylesheet" type="text/css" href="css/finaldraft.css"/>
+
+  <script data-main="js/app.js" src="lib/require.js"></script>
+</head>
+<body ng-controller="AudienceController">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="panel panel-default">
+          <span>You logged on </span><span><?=$user_name?></span><span>&nbsp;</span><span><a href='logout.php'>Logout</a></span>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4 col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-heading"><span class="panel-title">Editor - <span ng-model="editorTitle">{{editorTitle}}</span></span></div>
+            <ui-codemirror class="panel-body nopadding CodeMirror" id="editor" ng-model="editor" ui-codemirror="{ onLoad:codemirrorLoaded }" ui-codemirror-opts="editorOptions"></ui-codemirror>
+            <div class="panel-footer form-horizontal">
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <button type="button" id="newdoc" ng-click="newDoc()" class="btn btn-default">New</button>
+                  <button type="button" id="loaddoc" ng-click="loadDoc()" class="btn btn-default">Load</button>
+                  <button type="button" id="savedoc" ng-click="saveDoc()" class="btn btn-default">Save</button>
+                  <button type="button" id="savedocas" ng-click="saveDocAs()" class="btn btn-default">Save As...</button>
+                  <button type="button" id="deletedoc" ng-click="deleteDoc()" class="btn btn-danger">DELETE</button>
+                  <button type="button" id="sharedoc" ng-click="shareDoc()" class="btn btn-default">Share +</button>
+                  <button type="button" id="analyze" ng-click="analyze()" class="btn btn-default">Analyze</button>
+                </div>
+              </div>
+              <div class="navbar">
+                <div>
+                  <label>Scene Range</label>
+                  <input type="number" ng-init="0" ng-model="scene_start"/> - <input type="number" ng-init="0" ng-model="scene_end"/> <input type="button" class="btn btn-default" value="Update" ng-click="refreshNet()"/>
+                </div>
+                <span>From : {{ sceneStartTitle }}</span><br /><span>To : {{ sceneEndTitle }}</span>
+                <div><input type="checkbox" ng-model="clustered"/>Cluster view</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#character-tab" role="tab" data-toggle="tab" data-tab="character">Character-Net</a></li>
+            <li                 ><a href="#tblview-tab" role="tab" data-toggle="tab" data-tab="table">Table View</a></li>
+            <li                 ><a href="#jsonview-tab" role="tab" data-toggle="tab" data-tab="jsonview">JSON View</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="character-tab">
+              <div class="panel panel-default">
+                <div class="panel panel-body autoresize" id="character">
+                  <svg id="character_net"></svg>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tblview-tab">
+              <div class="panel panel-default">
+                <div class="panel-body" id="tblview" ng-controller="TableViewController">
+                  <h3>Degree Centrality</h3>
+                  <table class="table-bordered">
+                    <thead>
+                      <th>Group</th><th>DC</th>
+                    </thead>
+                    <tbody>
+                      <tr><td>Main</td><td>{{ DC[0] }}</td></tr>
+                      <tr><td>Sub</td><td>{{ DC[1] }}</td></tr>
+                      <tr><td>Extra</td><td>{{ DC[2] }}</td></tr>
+                    </tbody>
+                  </table>
+                  <h3>Weight(Total: {{ totalWeight }})</h3>
+                  <table class="table-bordered">
+                    <thead>
+                      <th>Group</th><th>Value</th>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="val in groupVal">
+                        <td>{{ val.source }} -&gt; {{ val.target }}</td><td>{{ val.degree }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <h3>Number of Characters</h3>
+                  <table class="table-bordered">
+                    <thead>
+                      <th>Group</th><th>Value</th>
+                    </thead>
+                    <tbody>
+                      <tr><td>13) Main</td><td>{{ group1.length }}</td></tr>
+                      <tr><td>14) Sub</td><td>{{ group2.length }}</td></tr>
+                      <tr><td>15) Extra</td><td>{{ group3.length }}</td></tr>
+                    </tbody>
+                  </table>                  
+                  <h3>Talk Degree</h3>
+                  <table class="table-bordered">
+                    <thead>
+                      <th>Character</th><th>Tell</th><th>Listen</th><th>Delta</th>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="talk in talkDegree"
+                          ng-class='{
+                            group1: $index <  group2Index,
+                            group2: $index >= group2Index &amp;&amp; $index < group3Index,
+                            group3: $index >= group3Index
+                          }'>
+                        <td>{{ talk.character }}</td>
+                        <td>{{ talk.tell }}</td>
+                        <td>{{ talk.listen }}</td>
+                        <td>{{ talk.delta }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h3>Character Net Matrix</h3>
+                  <button ng-click="refreshNet()" class="btn btn-warning">Update</button>
+                  <table class="table-bordered">
+                    <tr ng-repeat="row in charNetTable">
+                      <td ng-repeat="col in row track by $index">{{ col }}</td>
+                    </tr>
+                  </table>
+
+                  <h3>Talks</h3>
+                  <table class="table-bordered">
+                    <thead>
+                      <th>Scene</th><th>Title</th><th>line #</th><th>Teller</th><th>Listener</th><th>Dialogue</th>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="talk in talks">
+                        <td>{{ talk.number }}</td>
+                        <td>{{ talk.title }}</td>
+                        <td>{{ talk.line }}</td>
+                        <td>{{ talk.teller }}</td>
+                        <td>{{ talk.listener }}</td>
+                        <td>{{ talk.dialogue }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="jsonview-tab">
+              <div class="panel panel-default">
+                <div class="panel-body autoresize">
+                  <span class="nav">This JSON stored at window.scenes</span>
+                  <pre class="col-xs-12" style="height:100%" id="jsonview"></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>
