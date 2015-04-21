@@ -36,7 +36,7 @@ module.exports = function(options) {
     var cssFilter = $.filter('**/*.css');
     var assets;
 
-    return gulp.src(options.tmp + '/serve/*.html')
+    return gulp.src(options.tmp + '/serve/**/*.html')
       .pipe($.inject(partialsInjectFile, partialsInjectOptions))
       .pipe(assets = $.useref.assets())
       .pipe($.rev())
@@ -84,5 +84,5 @@ module.exports = function(options) {
     $.del([options.dist + '/', options.tmp + '/'], done);
   });
 
-  gulp.task('build', ['html', 'fonts', 'other']);
+  gulp.task('build', ['markups', 'html', 'fonts', 'other']);
 };
