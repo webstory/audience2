@@ -1,12 +1,11 @@
-window.CodeMirror.commands.parseScript = (cm, $rootScope) ->
+window.CodeMirror.commands.parseScript = (cm) ->
   currentCharacter = 'Noname'
   currentScene = 'Untitled'
   currentDialogue = {}
   characters = new Array()
   dialogues = new Array()
 
-  $rootScope.parsedScript = []
-  db = $rootScope.parsedScript
+  db = []
 
   for line in [0..cm.lastLine()]
     ch = 0
@@ -42,3 +41,5 @@ window.CodeMirror.commands.parseScript = (cm, $rootScope) ->
         _.noop() # No operation
     catch error
       console.error "Error at line #{line} : #{error}"
+
+  return db

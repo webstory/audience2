@@ -3,7 +3,7 @@ app = angular.module "audience2"
 ###
 Load Doc Dialogue controller
 ###
-app.controller "loadDocCtrl", ($scope, $modalInstance, items) ->
+app.controller "LoadDocCtrl", ($scope, $modalInstance, items) ->
   $scope.items = items
   $scope.selected =
     item: $scope.items[0]
@@ -19,7 +19,7 @@ app.controller "loadDocCtrl", ($scope, $modalInstance, items) ->
 ###
 Share Doc Dialogue controller
 ###
-app.controller "shareDocCtrl", ($scope, $http, $log, $modalInstance, title, items, documentDbService) ->
+app.controller "ShareDocCtrl", ($scope, $http, $log, $modalInstance, title, items, documentDbService) ->
   $scope.title = title
   $scope.items = items
   $scope.selected =
@@ -46,7 +46,7 @@ app.controller "shareDocCtrl", ($scope, $http, $log, $modalInstance, title, item
 ###
 Document Manager controller
 ###
-app.controller "documentManagerCtrl", ($scope, $modal, $log, documentDbService) ->
+app.controller "DocumentManagerCtrl", ($scope, $modal, $log, documentDbService) ->
   setEditorContent = (newTitle, newContent) ->
     $scope.$parent.editorTitle = newTitle
     $scope.$parent.editor = newContent
@@ -62,7 +62,7 @@ app.controller "documentManagerCtrl", ($scope, $modal, $log, documentDbService) 
     documentDbService.listDoc().success (data) ->
       file_choose = $modal.open
         templateUrl: "components/templates/filelist.tmpl.html"
-        controller: 'loadDocCtrl'
+        controller: 'LoadDocCtrl'
         size: 'lg'
         resolve:
           items: -> data
@@ -102,7 +102,7 @@ app.controller "documentManagerCtrl", ($scope, $modal, $log, documentDbService) 
 
       modalResult = $modal.open
         templateUrl: "components/templates/sharelist.tmpl.html"
-        controller: 'shareDocCtrl'
+        controller: 'ShareDocCtrl'
         size: 'sm'
         resolve:
           title: -> $scope.$parent.editorTitle

@@ -1,6 +1,6 @@
 div(ng-include="'components/navbar/navbar.html'")
 .container-fluid
-  .row(ng-controller="authCtrl")
+  .row(ng-controller="AuthCtrl")
     .panel.panel-default(ng-show="isLogged")
       span You logged on 
       span {{userName}}
@@ -22,7 +22,7 @@ div(ng-include="'components/navbar/navbar.html'")
             span(ng-model='editorTitle') {{editorTitle}}
         ui-codemirror#editor.panel-body.nopadding.CodeMirror(ng-model='editor', ui-codemirror='{ onLoad:codemirrorLoaded }', ui-codemirror-opts='editorOptions')
         .panel-footer.form-horizontal
-          .form-group(ng-controller="documentManagerCtrl")
+          .form-group(ng-controller="DocumentManagerCtrl")
             .col-sm-12
               button#newdoc.btn.btn-default(type='button', ng-click='newDoc()') New
               button#loaddoc.btn.btn-default(type='button', ng-click='loadDoc()') Load
@@ -46,13 +46,15 @@ div(ng-include="'components/navbar/navbar.html'")
               | Cluster view
     .col-md-8.col-xs-12
       tabset
-        tab(heading="Character-net")
+        tab(heading="Character-net", ng-controller="CharacterNetController")
           .panel.panel-default
-            .panel-body.autoresize
+            .panel-body
+              button.btn.btn-primary(ng-click="draw()") Draw
               svg#character_net
-        tab(heading="Table View")
+        tab(heading="Table View", ng-controller='TableViewController')
           .panel.panel-default
-            #tblview.panel-body(ng-controller='TableViewController')
+            #tableview.panel-body
+              button.btn.btn-primary(ng-click="refresh()") Refresh
               h3 Degree Centrality
               table.table-bordered
                 thead
@@ -84,14 +86,14 @@ div(ng-include="'components/navbar/navbar.html'")
                   th Value
                 tbody
                   tr
-                    td 13) Main
-                    td {{ group1.length }}
+                    td Main
+                    td {{ groupInfo.main.characters.length }}
                   tr
-                    td 14) Sub
-                    td {{ group2.length }}
+                    td Sub
+                    td {{ groupInfo.sub.characters.length }}
                   tr
-                    td 15) Extra
-                    td {{ group3.length }}
+                    td Extra
+                    td {{ groupInfo.extra.characters.length }}
               h3 Talk Degree
               table.table-bordered
                 thead
@@ -109,30 +111,38 @@ div(ng-include="'components/navbar/navbar.html'")
                     td {{ talk.tell }}
                     td {{ talk.listen }}
                     td {{ talk.delta }}
+              //- h3 Talks
+              //- table.table-bordered
+              //-   thead
+              //-     th Scene
+              //-     th Title
+              //-     th line #
+              //-     th Teller
+              //-     th Listener
+              //-     th Dialogue
+              //-   tbody
+              //-     tr(ng-repeat='talk in talks')
+              //-       td {{ talk.number }}
+              //-       td {{ talk.title }}
+              //-       td {{ talk.line }}
+              //-       td {{ talk.teller }}
+              //-       td {{ talk.listener }}
+              //-       td {{ talk.dialogue }}
+        tab(heading="Character Net Matrix", ng-controller='CharacterNetMatrixController')
+          .panel.panel-default
+            .panel-body
               h3 Character Net Matrix
-              button.btn.btn-warning(ng-click='refreshNet()') Update
+              button.btn.btn-warning(ng-click='refreshMatrix()') Update
+              input(type="radio" name="netSortBy" ng-model="netSortBy" value="plotTime")
+              label By plot time
+              input(type="radio" name="netSortBy" ng-model="netSortBy" value="degree")
+              label By degree
               table.table-bordered
                 tr(ng-repeat='row in charNetTable')
                   td(ng-repeat='col in row track by $index') {{ col }}
-              h3 Talks
-              table.table-bordered
-                thead
-                  th Scene
-                  th Title
-                  th line #
-                  th Teller
-                  th Listener
-                  th Dialogue
-                tbody
-                  tr(ng-repeat='talk in talks')
-                    td {{ talk.number }}
-                    td {{ talk.title }}
-                    td {{ talk.line }}
-                    td {{ talk.teller }}
-                    td {{ talk.listener }}
-                    td {{ talk.dialogue }}
+
         tab(heading="JSON View")
           .panel.panel-default
-            .panel-body.autoresize
+            .panel-body
               span.nav This JSON stored at window.scenes
               pre#jsonview.col-xs-12(style='height:100%').

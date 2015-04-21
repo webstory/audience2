@@ -1,8 +1,9 @@
 var drawGraph = function(target, links, width, height) {
   var nodes = {};
-  var degree_mid = 300,
-      degree_high = 1000,
-      degree_max = 0;
+  var degree_mid,
+      degree_high,
+      degree_max = 1000;
+  var r = 6; // Circle Radius
 
   // Compute the distinct nodes from the links.
   links.forEach(function(link) {
@@ -15,9 +16,6 @@ var drawGraph = function(target, links, width, height) {
   degree_mid = degree_max * 0.03;
   degree_high = degree_max * 0.7;
 
-  //var width = 800,
-  //    height = 800;
-
   var force = d3.layout.force()
       .nodes(d3.values(nodes))
       .links(links)
@@ -25,6 +23,7 @@ var drawGraph = function(target, links, width, height) {
       .linkDistance(300)
       .charge(-1000)
       .friction(0.1)
+      .gravity(0.06)
       .on("tick", tick)
       .start();
 
@@ -58,13 +57,13 @@ var drawGraph = function(target, links, width, height) {
   var path = svg.append("g").selectAll("path")
       .data(force.links())
     .enter().append("path")
-      .attr("class", function(d) { return "link " + d.type + " " + degree(d.degree); })
-      .attr("marker-end", function(d) { return "url(#" + (d.type || "default") + ")"; });
+      .attr("class", function(d) { return "link " + degree(d.degree); })
+      .attr("marker-end", function(d) { return "url(#default)"; });
 
   var circle = svg.append("g").selectAll("circle")
       .data(force.nodes())
     .enter().append("circle")
-      .attr("r", 6)
+      .attr("r", r)
       .call(force.drag)
       .on("mouseover", fade(0.1))
       .on("mouseout", fade(1));
@@ -120,9 +119,9 @@ var drawGraph = function(target, links, width, height) {
 
   // Use elliptical arc path segments to doubly-encode directionality.
   function tick() {
-    path.attr("d", linkArc);
     circle.attr("transform", transform);
-    text.attr("transform", transform);
+    path.attr("d", linkArc);
+    text.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
     link_label.attr("transform", function(d) {
         var dx = (nodes[d.target.name].x - nodes[d.source.name].x),
             dy = (nodes[d.target.name].y - nodes[d.source.name].y);
@@ -158,26 +157,29 @@ var drawGraph = function(target, links, width, height) {
         largeArc = 0,  // -1 or 0,
         sweep = 1     // 1 or 0,
 
-        // Self edge
-        if( x1 == x2 && y1 == y2 ) {
-          xRotation = -45;
-          largeArc = 1;
-          //sweep = 0
+    // Self edge
+    if( x1 == x2 && y1 == y2 ) {
+      xRotation = -45;
+      largeArc = 1;
+      //sweep = 0
 
-          // Make drx and dry different to get an ellipse instead of a circle
-          drx = 20;
-          dry = 20;
+      // Make drx and dry different to get an ellipse instead of a circle
+      drx = 20;
+      dry = 20;
 
-          // For whatever reason the arc collapses to a point if the beginning
-          // and ending points of the arc are the same, so kludge it.
-          x2 = x2 + 1;
-          y2 = y2 + 1;
-        }
+      // For whatever reason the arc collapses to a point if the beginning
+      // and ending points of the arc are the same, so kludge it.
+      x2 = x2 + 1;
+      y2 = y2 + 1;
+    }
 
     return "M" + x1 + "," + y1 + "A" + drx + "," + dry + " " + xRotation + "," + largeArc + "," + sweep + " " + x2 + "," + y2;
   }
 
   function transform(d) {
+    d.x = Math.max(r, Math.min(width-r, d.x));
+    d.y = Math.max(r, Math.min(height-r, d.y));
+
     return "translate(" + d.x + "," + d.y + ")";
   }
 }

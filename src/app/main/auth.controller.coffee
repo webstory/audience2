@@ -1,5 +1,5 @@
 angular.module "audience2"
-  .controller "authCtrl", ($scope, $modal, authService, $log) ->
+  .controller "AuthCtrl", ($scope, $modal, authService, $log) ->
     $scope.userName = authService.getUserName()
     $scope.isLogged = authService.isLogged()
 
