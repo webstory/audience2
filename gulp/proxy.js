@@ -21,7 +21,7 @@ var chalk = require('chalk');
 /*
  * Location of your backend server
  */
-var proxyTarget = 'https://localhost/audience2';
+var proxyTarget = 'https://se.storymate.net/audience2';
 
 var proxy = httpProxy.createProxyServer({
   target: proxyTarget,

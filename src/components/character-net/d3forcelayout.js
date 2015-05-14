@@ -5,6 +5,10 @@ var drawGraph = function(target, links, width, height) {
       degree_max = 1000;
   var r = 6; // Circle Radius
 
+  if(typeof links === 'undefined' || typeof links.forEach !== 'function') {
+    return;
+  }
+
   // Compute the distinct nodes from the links.
   links.forEach(function(link) {
     link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
@@ -182,4 +186,4 @@ var drawGraph = function(target, links, width, height) {
 
     return "translate(" + d.x + "," + d.y + ")";
   }
-}
+};

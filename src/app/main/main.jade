@@ -141,6 +141,21 @@ div(ng-include="'components/navbar/navbar.html'")
                 tr(ng-repeat='row in charNetTable')
                   td(ng-repeat='col in row track by $index') {{ col }}
 
+        tab(heading="Scene Net", ng-controller='SceneNetController')
+          .panel.panel-default
+            .panel-body
+              button.btn.btn-warning(ng-click='refreshNet()') Update
+
+              ul
+                li(ng-repeat='character in characters')
+                  input(type="checkbox" name="{{character}}" value="{{character}}")
+                  label {{character}}
+
+
+        tab(heading="Scene Graph")
+          .panel.panel-default
+            .panel-body
+
         tab(heading="JSON View")
           .panel.panel-default
             .panel-body
