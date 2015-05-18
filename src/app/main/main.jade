@@ -144,12 +144,23 @@ div(ng-include="'components/navbar/navbar.html'")
         tab(heading="Scene Net", ng-controller='SceneNetController')
           .panel.panel-default
             .panel-body
-              button.btn.btn-warning(ng-click='refreshNet()') Update
+              div.row
+                button.btn.btn-warning(ng-click='refreshNet()') Update
 
-              ul
-                li(ng-repeat='character in characters')
-                  input(type="checkbox" name="{{character}}" value="{{character}}")
-                  label {{character}}
+              div(style="float:left; width:30%")
+                h3 Character
+                ul
+                  li(ng-repeat='character in characters')
+                    input(type="checkbox" name="{{character}}" value="{{character}}")
+                    label {{character}}
+
+              div(style="float:left; width:70%")
+                h3 Appearance
+                ul
+                  li(ng-repeat='scene in scenes')
+                    label {{$index + 1}}: {{scene.sceneTitle}}
+
+
 
 
         tab(heading="Scene Graph")

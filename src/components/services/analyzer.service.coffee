@@ -217,4 +217,22 @@ app.factory "analyzerService", ($window, $log, analyzerConfig) ->
       return DC
 
 
+    ###
+    Build Places
+    ###
+    getPlaces: (scenes) ->
+      # Schema: places {{sceneTitle : [scene#]}}
+      # Omit Day/Night
+      places = {}
+
+      for s,i in scenes
+        title = /^(?:INT\.|EXT\.|INT\/EXT\.)\s*(.+?)\s*-\s*(?:DAY|NIGHT|.+)$/.exec(s.sceneTitle)[1]
+
+        if places[title] != undefined
+          places[title].push(i+1)
+        else
+          places[title] = [i+1]
+
+      return places
+
   }
