@@ -3,7 +3,6 @@ app = angular.module "audience2"
 app.controller "CharacterImportanceChartController", ($scope, $log, analyzerService) ->
   $scope.chartoptions = {
     chart:
-      #type: 'lineWithFocusChart'
       type: 'lineChart'
       height: 500
       x: (d) -> d.scene_number
@@ -11,11 +10,10 @@ app.controller "CharacterImportanceChartController", ($scope, $log, analyzerServ
       useInteractiveGuideline: true
       xAxis:
         axisLabel: 'Scenes'
+        tickFormat: (d) -> "#{d}: #{sceneTitles[d-1]}"
       yAxis:
         axisLabel: 'CI'
         tickFormat: (d) -> d3.format('.02f')(d)
-      x2Axis: {}
-      y2Axis: {}
     title:
       enable: true
       text: "Character Importance"
@@ -24,17 +22,19 @@ app.controller "CharacterImportanceChartController", ($scope, $log, analyzerServ
     refreshDataOnly: false
   }
 
+  sceneTitles = []
+
   $scope.refresh = ->
-    $scope.data = []
     links = $scope.olinks
     scenes = $scope.parsedScript
+    sceneTitles = _.pluck(scenes, "sceneTitle")
 
-    $scope.characters = analyzerService.getAllCharactersFromGroupInfo($scope.groupInfo)
+    $scope.characters = [].concat($scope.groupInfo.main.characters).concat($scope.groupInfo.sub.characters)
 
-
-    for character, char_index in $scope.characters
+    data = []
+    for character in $scope.characters
       scene_ci = []
-      $scope.data.push {
+      data.push {
         values: scene_ci
         key: character
         disabled: true
@@ -51,3 +51,5 @@ app.controller "CharacterImportanceChartController", ($scope, $log, analyzerServ
           talk_total += d.dialogue.length
 
         scene_ci.push({ value: talk / talk_total, scene_number: scene_index + 1})
+
+    $scope.data = data
