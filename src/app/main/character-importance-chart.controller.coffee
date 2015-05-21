@@ -3,7 +3,7 @@ app = angular.module "audience2"
 app.controller "CharacterImportanceChartController", ($scope, $log, analyzerService) ->
   $scope.chartoptions = {
     chart:
-      type: 'lineChart'
+      type: 'stackedAreaChart'
       height: 500
       x: (d) -> d.scene_number
       y: (d) -> d.value
@@ -14,6 +14,10 @@ app.controller "CharacterImportanceChartController", ($scope, $log, analyzerServ
       yAxis:
         axisLabel: 'CI'
         tickFormat: (d) -> d3.format('.02f')(d)
+      showXAxis: false
+      interpolate: "step"
+      clipEdge: true
+      transitionDuration: 500
     title:
       enable: true
       text: "Character Importance"
