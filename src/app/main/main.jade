@@ -160,12 +160,12 @@ div(ng-include="'components/navbar/navbar.html'")
                   li(ng-repeat='scene in scenes')
                     label {{$index + 1}}: {{scene.sceneTitle}}
 
-
-
-
-        tab(heading="Scene Graph")
+        tab(heading="Character Importance" ng-controller='CharacterImportanceChartController')
           .panel.panel-default
             .panel-body
+              div.row
+                button.btn.btn-warning(ng-click='refresh()') Update
+                nvd3(options="chartoptions" data="data")
 
         tab(heading="JSON View")
           .panel.panel-default

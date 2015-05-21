@@ -10,6 +10,7 @@ angular.module 'audience2', [
   'ui.bootstrap.modal'
   'angular-lodash'
   'ui.codemirror'
+  'nvd3'
   'hljs' # Highlightjs
   ]
   .config ($stateProvider, $urlRouterProvider) ->
