@@ -1,6 +1,5 @@
-app = angular.module "audience2"
-
-app.controller "MainCtrl", ($scope, $q, $log, hljsService, analyzerService) ->
+angular.module "audience2"
+.controller "MainCtrl", ($scope, $q, $log, hljsService, analyzerService) ->
   $scope.editorOptions =
     lineNumbers: true
     lineWrapping: true

@@ -1,6 +1,5 @@
-app = angular.module "audience2"
-
-app.controller "TableViewController", ($scope, analyzerService) ->
+angular.module "audience2"
+.controller "TableViewController", ($scope, analyzerService) ->
   $scope.refresh = ->
     scenes = $scope.$parent.parsedScript
     if !scenes? then return

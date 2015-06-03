@@ -41,15 +41,15 @@ div(ng-include="'components/navbar/navbar.html'")
             span From : {{ sceneStartTitle }}
             br
             span To : {{ sceneEndTitle }}
-            div
-              input(type='checkbox', ng-model='clustered')
-              | Cluster view
     .col-md-8.col-xs-12
       tabset
         tab(heading="Character-net", ng-controller="CharacterNetController")
           .panel.panel-default
             .panel-body
-              button.btn.btn-primary(ng-click="draw()") Draw
+              div
+                button.btn.btn-primary(ng-click="draw()") Draw
+                input(type='checkbox', ng-model='clustered')
+                | Cluster view
               svg#character_net
         tab(heading="Table View", ng-controller='TableViewController')
           .panel.panel-default
