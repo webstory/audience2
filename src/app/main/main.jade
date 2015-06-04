@@ -147,18 +147,38 @@ div(ng-include="'components/navbar/navbar.html'")
               div.row
                 button.btn.btn-warning(ng-click='refreshNet()') Update
 
-              div(style="float:left; width:30%")
-                h3 Character
-                ul
-                  li(ng-repeat='character in characters')
-                    input(type="checkbox" name="{{character}}" value="{{character}}")
-                    label {{character}}
+              div.row
+                div.col-xs-3
+                  h3 Character
+                  ul.list-unstyled
+                    li(ng-repeat='character in characters')
+                      input(type="checkbox" checklist-model="selectedCharacters" checklist-value="character.name" ng-click="updateAppearance()")
+                      label {{character.name}}
 
-              div(style="float:left; width:70%")
-                h3 Appearance
-                ul
-                  li(ng-repeat='scene in scenes')
-                    label {{$index + 1}}: {{scene.sceneTitle}}
+                div.col-xs-7
+                  h3 Appearance
+                  ul.list-unstyled
+                    li(ng-repeat='scene in appearance')
+                      p {{ scene.sceneNo }}: {{ scene.sceneTitle }}
+                      p.small &gt;
+                        i(ng-repeat='character in scene.characters') {{character}}, 
+              div.row
+                div.col-xs-12
+                  h3 Scene Importance
+                  table.table-bordered
+                    thead
+                      tr
+                        th Rank
+                        th Scene no
+                        th Title
+                        th Characters
+                    tbody
+                      tr(ng-repeat='scene in sorted_scene_by_characters track by $index')
+                        td {{ $index + 1 }}
+                        td {{ scene.sceneNo }}
+                        td {{ scene.sceneTitle }}
+                        td.small
+                          i(ng-repeat='character in scene.characters') {{character}}, 
 
         tab(heading="Character Importance" ng-controller='CharacterImportanceChartController')
           .panel.panel-default

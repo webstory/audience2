@@ -12,6 +12,7 @@ angular.module 'audience2', [
   'ui.codemirror'
   'nvd3'
   'hljs' # Highlightjs
+  "checklist-model"
   ]
   .config ($stateProvider, $urlRouterProvider) ->
     $stateProvider
