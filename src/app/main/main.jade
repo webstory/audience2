@@ -166,6 +166,12 @@ div(ng-include="'components/navbar/navbar.html'")
               div.row
                 button.btn.btn-warning(ng-click='refresh()') Update
                 nvd3(options="chartoptions" data="data")
+              div.row
+                h3 Closeness (%)
+                table.table-bordered.table-hover
+                  tr(ng-repeat='row in closenessTable')
+                    td(align="right" ng-repeat='col in row track by $index') {{ col }}
+                
 
         tab(heading="JSON View")
           .panel.panel-default

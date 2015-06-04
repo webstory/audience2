@@ -4,6 +4,7 @@ window.CodeMirror.commands.parseScript = (cm) ->
   currentDialogue = {}
   characters = new Array()
   dialogues = new Array()
+  sceneNo = 0
 
   db = []
 
@@ -17,9 +18,11 @@ window.CodeMirror.commands.parseScript = (cm) ->
 
     try
       if token.type == "sceneheading"
+        sceneNo += 1
         characters = new Array()
         dialogues = new Array()
         db.push({
+          'sceneNo': sceneNo
           'lineNo': line + 1
           'sceneTitle': token.string.trim()
           'dialogues': dialogues

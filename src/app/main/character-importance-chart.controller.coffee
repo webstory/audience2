@@ -29,6 +29,9 @@ app.controller "CharacterImportanceChartController", ($scope, $log, analyzerServ
   sceneTitles = []
 
   $scope.refresh = ->
+    ###
+    CI chart update
+    ###
     links = $scope.olinks
     scenes = $scope.parsedScript
     sceneTitles = _.pluck(scenes, "sceneTitle")
@@ -57,3 +60,23 @@ app.controller "CharacterImportanceChartController", ($scope, $log, analyzerServ
         scene_ci.push({ value: talk / talk_total, scene_number: scene_index + 1})
 
     $scope.data = data
+
+    ###
+    Closeness Table
+    ###
+    $scope.closenessTable = []
+
+    $scope.closenessTable.push(["*"].concat($scope.characters)) # Column Header
+
+    for c1 in $scope.characters
+      row = [c1]
+      $scope.closenessTable.push(row)
+      c1_appear = _.pluck(_.filter(scenes, (n) -> _.includes(n.characters, c1)),'sceneNo')
+
+      for c2 in $scope.characters
+        c2_appear = _.pluck(_.filter(scenes, (n) -> _.includes(n.characters, c2)),'sceneNo')
+        c1_and_c2 = _.intersection(c1_appear, c2_appear)
+        c1_or_c2 = _.union(c1_appear, c2_appear)
+        row.push(Math.round(c1_and_c2.length / (c1_or_c2.length + 0.0001) * 100))
+
+
