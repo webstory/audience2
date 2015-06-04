@@ -34,11 +34,6 @@ app.controller "SceneNetController", ($scope, $log, analyzerService) ->
         appear: appear
       })
 
-    places = analyzerService.getPlaces(scenes)
-
-    $log.debug("Places")
-    $log.debug(places)
-
     ###
     Sorted scene by Characters
     ###
