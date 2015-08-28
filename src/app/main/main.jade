@@ -1,18 +1,5 @@
 div(ng-include="'components/navbar/navbar.html'")
 .container-fluid
-  .row(ng-controller="AuthCtrl")
-    .panel.panel-default(ng-show="isLogged")
-      span You logged on 
-      span {{userName}}
-      button(ng-click="logout()") &nbsp;Logout
-    .panel.panel-default(ng-hide="isLogged")
-      label(for="user_id") ID
-      input(name="user_id" type="text" ng-model="user_id")
-      label(for="pw") Password
-      input(name="pw" type="password" ng-model="pw")
-      button(ng-click="login()") Login
-
-.container-fluid
   .row
     .col-md-4.col-xs-12
       .panel.panel-default
@@ -24,12 +11,6 @@ div(ng-include="'components/navbar/navbar.html'")
         .panel-footer.form-horizontal
           .form-group(ng-controller="DocumentManagerCtrl")
             .col-sm-12
-              button#newdoc.btn.btn-default(type='button', ng-click='newDoc()') New
-              button#loaddoc.btn.btn-default(type='button', ng-click='loadDoc()') Load
-              button#savedoc.btn.btn-default(type='button', ng-click='saveDoc()') Save
-              button#savedocas.btn.btn-default(type='button', ng-click='saveDocAs()') Save As...
-              button#deletedoc.btn.btn-danger(type='button', ng-click='deleteDoc()') DELETE
-              button#sharedoc.btn.btn-default(type='button', ng-click='shareDoc()') Share +
               button#analyze.btn.btn-default(type='button', ng-click='analyze()') Analyze
           .navbar
             div
